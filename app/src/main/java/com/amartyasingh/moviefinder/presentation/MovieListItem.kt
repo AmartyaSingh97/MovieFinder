@@ -41,7 +41,7 @@ fun MovieListItem(
     movie: FavoriteMovie,
     modifier: Modifier = Modifier,
     onMovieClick: (Int) -> Unit,
-    onFavClicked: () -> Unit
+    onFavClicked: () -> Unit,
 ) {
     var isFavorite by rememberSaveable { mutableStateOf(movie.isFavorite) }
 

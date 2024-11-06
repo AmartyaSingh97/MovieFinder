@@ -16,12 +16,14 @@ import androidx.compose.ui.unit.dp
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import com.amartyasingh.moviefinder.data.local.entity.FavoriteMovie
+import com.amartyasingh.moviefinder.viewmodels.MainViewModel
 
 @Composable
 fun MoviesListScreen(
     movies: LazyPagingItems<FavoriteMovie>,
     modifier: Modifier = Modifier,
-    onFavClicked: (Int) -> Unit
+    onMovieClicked: (Int) -> Unit,
+    viewModel: MainViewModel
 ) {
     val context = LocalContext.current
     LaunchedEffect(key1 = movies.loadState) {
@@ -50,8 +52,10 @@ fun MoviesListScreen(
                         MovieListItem(
                             movie = movie,
                             modifier = Modifier.fillMaxWidth(),
-                            onMovieClick = { /* Handle movie click */ },
-                            onFavClicked =  { onFavClicked(movie.id)}
+                            onMovieClick = { onMovieClicked(movie.id) },
+                            onFavClicked =  {
+                                viewModel.toggleFavorite(movie.id)
+                            },
                         )
                     }
                 }
