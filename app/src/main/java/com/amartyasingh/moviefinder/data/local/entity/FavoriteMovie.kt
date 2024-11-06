@@ -17,6 +17,9 @@ data class FavoriteMovie(
     @SerializedName("backdrop_path")
     @ColumnInfo(name = "backdrop_path")
     val backdropPath: String?,
+    @SerializedName("poster_path")
+    @ColumnInfo(name = "poster_path")
+    val posterPath: String?,
     @SerializedName("vote_average")
     @ColumnInfo(name = "vote_average")
     val voteAverage: Double?,

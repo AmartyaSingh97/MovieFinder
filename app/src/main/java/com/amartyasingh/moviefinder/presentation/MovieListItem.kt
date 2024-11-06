@@ -60,7 +60,7 @@ fun MovieListItem(
                 .padding(16.dp)
         ) {
             AsyncImage(
-                model = "https://image.tmdb.org/t/p/original" + movie.backdropPath,
+                model = "https://image.tmdb.org/t/p/original" + movie.posterPath,
                 contentDescription = movie.title,
                 modifier = Modifier
                     .height(120.dp)
