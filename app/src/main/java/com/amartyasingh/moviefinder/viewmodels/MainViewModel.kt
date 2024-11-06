@@ -29,10 +29,21 @@ class MainViewModel @Inject constructor(private val pagingSource: MoviePagingSou
     fun toggleFavorite(movieId: Int) {
         viewModelScope.launch(Dispatchers.IO) {
             movieDao.toggleFavoriteStatus(movieId)
+            _movieData.value = movieDao.getMovieById(movieId)
         }
     }
 
-    init {
+    private val _movieData = MutableStateFlow<FavoriteMovie?>(null)
+    var movieData = _movieData.asStateFlow()
+        private set
+
+    fun getMovieById(movieId: Int) {
+        viewModelScope.launch(Dispatchers.IO) {
+            _movieData.value = movieDao.getMovieById(movieId)
+        }
+    }
+
+    fun getMovies(){
         viewModelScope.launch(Dispatchers.IO) {
             Pager(
                 config = PagingConfig(
@@ -44,5 +55,9 @@ class MainViewModel @Inject constructor(private val pagingSource: MoviePagingSou
                 _movieResponse.value = it
             }
         }
+    }
+
+    init {
+        getMovies()
     }
 }

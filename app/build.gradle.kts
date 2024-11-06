@@ -86,6 +86,8 @@ dependencies {
     kapt ("androidx.room:room-compiler:2.6.1")
     implementation (libs.androidx.room.paging)
     implementation (libs.androidx.material.icons.extended)
+
+    implementation (libs.androidx.navigation.compose)
 }
 kapt {
     correctErrorTypes = true
