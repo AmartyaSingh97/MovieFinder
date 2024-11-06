@@ -15,11 +15,13 @@ class MoviePagingSource(
     private val movieDatabase: MovieDatabase
 ) : PagingSource<Int, FavoriteMovie>() {
 
+    var language = "en"
+
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, FavoriteMovie> {
         val page = params.key ?: STARTING_PAGE_INDEX
         return try {
 
-            val response = movieApi.getMovies(apiKey, page)
+            val response = movieApi.getMovies(apiKey, page, language)
 
             movieDatabase.withTransaction {
                 if (page == STARTING_PAGE_INDEX) {
@@ -27,9 +29,10 @@ class MoviePagingSource(
                 }
                 movieDatabase.movieDao.insertAll(response.results)
             }
+            val movieDataFromDB = movieDatabase.movieDao.getMovieByLanguage(language)
 
             LoadResult.Page(
-                data = response.results,
+                data = movieDataFromDB,
                 prevKey = if (page == STARTING_PAGE_INDEX) null else page - 1,
                 nextKey = if (response.results.isEmpty()) null else page + 1
             )
