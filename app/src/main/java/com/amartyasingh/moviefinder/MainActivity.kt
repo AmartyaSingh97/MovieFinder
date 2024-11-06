@@ -16,6 +16,10 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavType
@@ -24,6 +28,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import androidx.paging.compose.collectAsLazyPagingItems
+import com.amartyasingh.moviefinder.presentation.LanguageFilterBottomSheet
 import com.amartyasingh.moviefinder.presentation.MovieDetailsScreen
 import com.amartyasingh.moviefinder.presentation.MoviesListScreen
 import com.amartyasingh.moviefinder.ui.theme.MovieFinderTheme
@@ -45,10 +50,16 @@ class MainActivity : ComponentActivity() {
 
                     val navController = rememberNavController()
 
+                    var showLanguageFilterSheet by rememberSaveable { mutableStateOf(false) }
+
                     val vm = hiltViewModel<MainViewModel>()
                     val movieList = vm.movieResponse.collectAsLazyPagingItems()
 
+
                     NavHost(navController = navController, startDestination = "movies_list") {
+
+                        //List Screen
+
                         composable("movies_list") {
                             Scaffold(modifier = Modifier.fillMaxSize(),
                                 topBar = {
@@ -56,7 +67,9 @@ class MainActivity : ComponentActivity() {
                                         title = { Text(text = "Movie Stalker") },
                                         actions = {
                                             IconButton(
-                                                onClick = {  }
+                                                onClick = {
+                                                    showLanguageFilterSheet = true
+                                                }
                                             ) {
                                                 Icon(
                                                     imageVector = Icons.Default.FilterAlt,
@@ -67,6 +80,13 @@ class MainActivity : ComponentActivity() {
                                     )
                                 }
                             ) { innerPadding ->
+                                LanguageFilterBottomSheet(
+                                    selectedLang = vm.choosenLanguage,
+                                    isShowingState = showLanguageFilterSheet,
+                                    onDismissRequest = { showLanguageFilterSheet = false },
+                                    onApplyClick = { vm.setLanguage(it) }
+                                )
+
                                 MoviesListScreen(
                                     movies = movieList,
                                     modifier = Modifier.padding(innerPadding),
@@ -75,6 +95,8 @@ class MainActivity : ComponentActivity() {
                                 )
                             }
                         }
+
+                        //Details Screen
 
                         composable("movie_details/{movieId}",
                             arguments = listOf(navArgument("movieId") { type = NavType.IntType }))

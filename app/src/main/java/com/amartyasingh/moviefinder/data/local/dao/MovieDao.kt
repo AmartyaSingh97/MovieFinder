@@ -15,6 +15,9 @@ interface MovieDao {
     @Query("Delete From movie")
     suspend fun clearAllMovies()
 
+    @Query("Select * From movie")
+    suspend fun getAllMovies(): List<FavoriteMovie>
+
     @Query("Select * From movie Where id = :id")
     suspend fun getMovieById(id: Int): FavoriteMovie
 

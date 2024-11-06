@@ -33,6 +33,18 @@ class MainViewModel @Inject constructor(private val pagingSource: MoviePagingSou
         }
     }
 
+    private val _language: MutableStateFlow<String> = MutableStateFlow("en")
+    var choosenLanguage = _language.asStateFlow().value
+        private set
+
+    fun setLanguage(language: String) {
+        _language.value = language
+        viewModelScope.launch(Dispatchers.IO) {
+            movieDao.clearAllMovies()
+        }
+        getMovies()
+    }
+
     private val _movieData = MutableStateFlow<FavoriteMovie?>(null)
     var movieData = _movieData.asStateFlow()
         private set
@@ -43,14 +55,17 @@ class MainViewModel @Inject constructor(private val pagingSource: MoviePagingSou
         }
     }
 
-    fun getMovies(){
+    private fun getMovies(){
         viewModelScope.launch(Dispatchers.IO) {
+            val currentLang =  _language.value
             Pager(
                 config = PagingConfig(
-                    20, enablePlaceholders = true
+                    50, enablePlaceholders = true
                 )
             ) {
-                pagingSource
+                pagingSource.apply {
+                    language = currentLang
+                }
             }.flow.cachedIn(viewModelScope).collect {
                 _movieResponse.value = it
             }
