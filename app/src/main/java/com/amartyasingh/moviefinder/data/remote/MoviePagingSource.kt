@@ -9,11 +9,12 @@ import com.amartyasingh.moviefinder.network.ApiService
 import com.amartyasingh.moviefinder.utils.constants.apiKey
 import retrofit2.HttpException
 import java.io.IOException
+import javax.inject.Inject
 
-class MoviePagingSource(
-    private val movieApi: ApiService,
-    private val movieDatabase: MovieDatabase
-) : PagingSource<Int, FavoriteMovie>() {
+
+class MoviePagingSource @Inject constructor(private val movieApi: ApiService,
+                                            private val movieDatabase: MovieDatabase)
+    : PagingSource<Int, FavoriteMovie>() {
 
     var language = "en"
 
